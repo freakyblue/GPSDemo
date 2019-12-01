@@ -33,5 +33,6 @@ before_script:
   - adb devices
   - ./gradlew build installDebug
   - adb shell appops set de.freakyblue.gpsdemo 58 allow
+  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
 
 
