@@ -29,7 +29,7 @@ before_script:
   - emulator -avd test -no-skin -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
-  - sleep 200
+  - sleep 10
   - adb devices
   - adb shell appops set de.freakyblue.gpsdemo 58 allow
 
