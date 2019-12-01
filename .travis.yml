@@ -31,6 +31,7 @@ before_script:
   - adb shell input keyevent 82 &
   - sleep 10
   - adb devices
+  - ./gradlew build installDebug
   - adb shell appops set de.freakyblue.gpsdemo 58 allow
 
 
