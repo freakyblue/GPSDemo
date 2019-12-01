@@ -31,6 +31,6 @@ before_script:
   - adb shell input keyevent 82 &
   - sleep 200
   - adb devices
-  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
+  - adb shell appops set de.freakyblue.gpsdemo 58 allow
 
 
