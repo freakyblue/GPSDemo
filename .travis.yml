@@ -22,7 +22,7 @@ android:
 
 env:
   matrix:
-    - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
 
 before_script:
   - echo no | android create avd --force -n test -s "1080x1920" -t $ANDROID_TARGET --abi $ANDROID_ABI -c 200M
@@ -35,13 +35,12 @@ before_script:
   - adb devices
   - ./gradlew build installDebug
   - adb shell  'pm list packages -f'
+  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
   - adb shell appops set de.freakyblue.gpsdemo 58 allow
   - adb shell appops set de.freakyblue.gpsdemo permission:android.permission.ACCESS_MOCK_LOCATION allow
   - adb shell appops set de.freakyblue.gpsdemo android.permission.ACCESS_MOCK_LOCATION allow
   - adb shell appops set de.freakyblue.gpsdemo ACCESS_MOCK_LOCATION allow
   - adb shell appops set 0 de.freakyblue.gpsdemo 58 allow
-  - sudo adb shell appops set de.freakyblue.gpsdemo 58 allow
-  - sudo adb shell appops set 0 de.freakyblue.gpsdemo 58 allow
 
   - adb shell appops get de.freakyblue.gpsdemo 58
 
