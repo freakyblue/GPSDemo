@@ -1,7 +1,9 @@
 language: android
-dist : trusty
+sudo: true
+#dist : trusty
 
 before_install:
+  - echo y | sdkmanager "ndk-bundle"
   - yes | sdkmanager "platforms;android-28"
 
 android:
@@ -9,9 +11,9 @@ android:
     - tools
     - tools
     - platform-tools
-    - build-tools-$ANDROID_TARGET
+    - build-tools-26.0.3
     - $ANDROID_TARGET
-    - sys-img-armeabi-v7a-$ANDROID_TARGET
+    - sys-img-$ANDROID_TARGET
     - extra-android-support
     - extra-android-m2repository
     - extra-google-m2repository
@@ -22,9 +24,12 @@ android:
 
 env:
   matrix:
-    - ANDROID_TARGET=android-28  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-26  ANDROID_ABI=x86
 
 before_script:
+  - wget https://s3.amazonaws.com/download.onnx/models/opset_9/squeezenet.tar.gz && tar xf squeezenet.tar.gz
+  - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
+
   - echo no | android create avd --force -n test -s "1080x1920" -t $ANDROID_TARGET --abi $ANDROID_ABI -c 200M
   - emulator -avd test -no-skin -no-window &
   - android-wait-for-emulator
