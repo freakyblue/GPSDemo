@@ -31,7 +31,7 @@ before_script:
   - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
 
   - echo no | android create avd --force -n test -s "1080x1920" -t $ANDROID_TARGET --abi $ANDROID_ABI -c 200M
-  - emulator -avd test -no-skin -no-window &
+  - emulator-headless -avd test -no-skin -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
   - adb --version
