@@ -25,6 +25,7 @@ env:
     - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
 
 before_script:
+  - android list targets
   - echo no | android create avd --force -n test -s "1080x1920" -t "sys-img-x86-android-24" -c 200M
   - emulator -avd test -no-skin -no-window &
   - android-wait-for-emulator
