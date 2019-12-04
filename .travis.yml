@@ -1,68 +1,36 @@
 language: android
-sudo: true
-#dist : trusty
+
+jdk:
+  - oraclejdk8
 
 before_install:
-  - echo y | sdkmanager "ndk-bundle"
-  - yes | sdkmanager "platforms;android-28"
   - mkdir "$ANDROID_HOME/licenses" || true
-  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "$ANDROID_HOME/licenses/android-sdk-license"
+  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
   - sdkmanager tools
-  - sdkmanager "system-images;android-24;default;armeabi-v7a"
+  - sdkmanager "system-images;android-19;default;armeabi-v7a"
+  - echo no | avdmanager create avd --force -n test -k "system-images;android-19;default;armeabi-v7a"
+  - $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-window &
 
-
-android:
-  components:
-    - tools
-    - tools
-    - platform-tools
-    - build-tools-26.0.3
-    - $ANDROID_TARGET
-    - sys-img-$ANDROID_TARGET
-    - extra-android-support
-    - extra-android-m2repository
-    - extra-google-m2repository
-  licenses:
-    - 'android-sdk-preview-license-52d11cd2'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
-
-env:
-  matrix:
-    - ANDROID_TARGET=android-26  ANDROID_ABI=x86_64
+install: ./gradlew clean assemble --stacktrace
 
 before_script:
-  - wget https://s3.amazonaws.com/download.onnx/models/opset_9/squeezenet.tar.gz && tar xf squeezenet.tar.gz
-  - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
-
-  - echo no | avdmanager create avd --force -n emulatorApi24 -k "system-images;android-24;default;armeabi-v7a"
-  - $ANDROID_HOME/emulator/emulator -avd emulatorApi24 -no-audio -no-window &
-
-#  - echo no | avdmanager create avd --force -n test -s "1080x1920" -k "system-images;$ANDROID_TARGET;default;$ANDROID_ABI" -c 200M
-#  - emulator-headless -avd test -no-skin -no-window &
   - android-wait-for-emulator
+  - adb shell settings put global window_animation_scale 0 &
+  - adb shell settings put global transition_animation_scale 0 &
+  - adb shell settings put global animator_duration_scale 0 &
   - adb shell input keyevent 82 &
-  - adb --version
-  - adb shell pm list permissions
-  - sleep 10
-  - adb devices
-  - ./gradlew build installDebug
-  - adb shell  'pm list packages -f'
-  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
-  - adb shell appops set de.freakyblue.gpsdemo 58 allow
-  - adb shell appops set de.freakyblue.gpsdemo permission:android.permission.ACCESS_MOCK_LOCATION allow
-  - adb shell appops set de.freakyblue.gpsdemo android.permission.ACCESS_MOCK_LOCATION allow
-  - adb shell appops set de.freakyblue.gpsdemo ACCESS_MOCK_LOCATION allow
-  - adb shell appops set 0 de.freakyblue.gpsdemo 58 allow
 
-  - adb shell appops get de.freakyblue.gpsdemo 58
+script: ./gradlew check connectedCheck --stacktrace
 
+env:
+  global:
+    - ADB_INSTALL_TIMEOUT=10
 
-#  - adb shell appops set de.freakyblue.gpsdemo MOCK_LOCATION allow
-#  - adb shell appops set de.freakyblue.gpsdemo "MOCK_LOCATION" allow
-#  - adb shell appops set de.freakyblue.gpsdemo OP_MOCK_LOCATION allow
-#  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
-#  - adb shell appops set de.freakyblue.gpsdemo "android:mock_location" allow
-# - adb shell appops set de.freakyblue.gpsdemo OPSTR_MOCK_LOCATION allow
+notifications:
+  email: false
 
+sudo: false
 
+cache:
+  directories:
+    - $HOME/.gradle
