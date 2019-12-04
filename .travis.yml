@@ -1,36 +1,48 @@
 language: android
-
-jdk:
-  - oraclejdk8
+dist : trusty
 
 before_install:
+  # Install SDK license so Android Gradle plugin can install deps.
   - mkdir "$ANDROID_HOME/licenses" || true
-  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> "$ANDROID_HOME/licenses/android-sdk-license"
+  # Install the rest of tools (e.g. avdmanager)
   - sdkmanager tools
-  - sdkmanager "system-images;android-24;default;x86_64"
-  - echo no | avdmanager create avd --force -n test -k "system-images;android-19;default;armeabi-v7a"
-  - $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-window &
-
-install: ./gradlew clean assemble --stacktrace
+  # Install the system image.
+  - sdkmanager "system-images;android-24;default;armeabi-v7a"
+  # Create and start emulator for the script. Meant to race the install task.
+  - echo no | avdmanager create avd --force -n emulatorApi24 -k "system-images;android-24;default;armeabi-v7a"
+  - $ANDROID_HOME/emulator/emulator -avd emulatorApi24 -no-audio -no-window &
 
 before_script:
   - android-wait-for-emulator
+  # Disable animations
   - adb shell settings put global window_animation_scale 0 &
   - adb shell settings put global transition_animation_scale 0 &
   - adb shell settings put global animator_duration_scale 0 &
   - adb shell input keyevent 82 &
 
-script: ./gradlew check connectedCheck --stacktrace
+  - adb --version
+  - adb shell pm list permissions
+  - sleep 10
+  - adb devices
+  - ./gradlew build installDebug
+  - adb shell  'pm list packages -f'
+  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
+  - adb shell appops set de.freakyblue.gpsdemo 58 allow
+  - adb shell appops set de.freakyblue.gpsdemo permission:android.permission.ACCESS_MOCK_LOCATION allow
+  - adb shell appops set de.freakyblue.gpsdemo android.permission.ACCESS_MOCK_LOCATION allow
+  - adb shell appops set de.freakyblue.gpsdemo ACCESS_MOCK_LOCATION allow
+  - adb shell appops set 0 de.freakyblue.gpsdemo 58 allow
 
-env:
-  global:
-    - ADB_INSTALL_TIMEOUT=10
+  - adb shell appops get de.freakyblue.gpsdemo 58
 
-notifications:
-  email: false
+script: ./gradlew connectedAndroidTest
 
-sudo: false
+#  - adb shell appops set de.freakyblue.gpsdemo MOCK_LOCATION allow
+#  - adb shell appops set de.freakyblue.gpsdemo "MOCK_LOCATION" allow
+#  - adb shell appops set de.freakyblue.gpsdemo OP_MOCK_LOCATION allow
+#  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
+#  - adb shell appops set de.freakyblue.gpsdemo "android:mock_location" allow
+# - adb shell appops set de.freakyblue.gpsdemo OPSTR_MOCK_LOCATION allow
 
-cache:
-  directories:
-    - $HOME/.gradle
+
