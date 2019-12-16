@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         text.setText("test");
         LatLng currPos = new LatLng(location.getLatitude(), location.getLongitude());
-        gmap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
+        //gmap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
         gmap.addMarker(new MarkerOptions().position(currPos).title("marker"));
         if (prevLocation != null) {
             text.setText(String.valueOf(location.distanceTo(prevLocation)));
@@ -121,6 +121,6 @@ public class MainActivity extends AppCompatActivity
         gmap = googleMap;
         gmap.setMyLocationEnabled(true);
         gmap.setMapType(MAP_TYPE_SATELLITE);
-        gmap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0,0)));
+        //gmap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0,0)));
     }
 }
