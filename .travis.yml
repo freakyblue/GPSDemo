@@ -25,7 +25,6 @@ jobs:
 
 android:
   components:
-    # installing tools to start, then use `sdkmanager` below to get the rest
     - tools
 
 licenses:
@@ -33,7 +32,6 @@ licenses:
   - 'android-sdk-license-.+'
   - 'google-gdk-license-.+'
 
-# Emulator Management: Create, Start and Wait
 install:
   - echo 'count=0' > /home/travis/.android/repositories.cfg # Avoid harmless sdkmanager warning
   - echo y | sdkmanager "platform-tools" >/dev/null
@@ -50,8 +48,9 @@ install:
   - adb shell input keyevent 82 &
 
 before_script:
- - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
- - adb shell appops set de.freakyblue.gpsdemo android.permission.ACCESS_FINE_LOCATION allow
+  - ./gradlew installDebug
+  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
+  - adb shell appops set de.freakyblue.gpsdemo android.permission.ACCESS_FINE_LOCATION allow
 
 
 script:
