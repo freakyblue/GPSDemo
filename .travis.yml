@@ -13,7 +13,6 @@ env:
     - TOOLS=${ANDROID_HOME}/tools
     - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
   matrix:
-    - API=23 ABI=x86_64
     - API=24 ABI=x86_64
     - API=25 ABI=x86_64
     - API=27 ABI=x86_64
