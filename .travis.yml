@@ -52,7 +52,8 @@ install:
 
 before_script:
  - adb shell appops set de.freakyblue.gpsdemo android:mock_location allow
- 
+ - adb shell appops set de.freakyblue.gpsdemo android.permission.ACCESS_FINE_LOCATION allow
+
 
 script:
   - ./gradlew connectedCheck --stacktrace
