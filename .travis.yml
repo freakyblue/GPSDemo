@@ -17,12 +17,6 @@ env:
     - API=25 ABI=x86_64
     - API=27 ABI=x86_64
 
-jobs:
-  include:
-    - stage: finalize_coverage
-      env: FINALIZE_COVERAGE=TRUE API=NONE
-      install: skip
-
 android:
   components:
     - tools
