@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap gmap;
     private LocationManager locationManager;
     private Location prevLocation;
+    private boolean mapReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,8 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         text.setText("test");
         LatLng currPos = new LatLng(location.getLatitude(), location.getLongitude());
-        //gmap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
+        if (mapReady)
+            gmap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
         gmap.addMarker(new MarkerOptions().position(currPos).title("marker"));
         if (prevLocation != null) {
             text.setText(String.valueOf(location.distanceTo(prevLocation)));
@@ -121,6 +123,7 @@ public class MainActivity extends AppCompatActivity
         gmap = googleMap;
         gmap.setMyLocationEnabled(true);
         gmap.setMapType(MAP_TYPE_SATELLITE);
-        //gmap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0,0)));
+        gmap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0,0)));
+        mapReady = true;
     }
 }
