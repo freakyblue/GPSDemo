@@ -62,9 +62,9 @@ public class MainTest {
         location.setLongitude(lng);
         location.setAltitude(alt);
         location.setAccuracy(0);
-        location.setVerticalAccuracyMeters(1);
-        location.setSpeedAccuracyMetersPerSecond(1);
-        location.setBearingAccuracyDegrees(2);
+        //location.setVerticalAccuracyMeters(1);
+        //location.setSpeedAccuracyMetersPerSecond(1);
+        //location.setBearingAccuracyDegrees(2);
         location.setTime(System.currentTimeMillis());
         location.setElapsedRealtimeNanos(System.nanoTime() + 200);
         locationManager.setTestProviderLocation(
