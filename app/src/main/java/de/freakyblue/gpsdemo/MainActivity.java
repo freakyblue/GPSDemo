@@ -100,9 +100,10 @@ public class MainActivity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         text.setText("test");
         LatLng currPos = new LatLng(location.getLatitude(), location.getLongitude());
-        if (mapReady)
+        if (mapReady) {
             gmap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
-        gmap.addMarker(new MarkerOptions().position(currPos).title("marker"));
+            gmap.addMarker(new MarkerOptions().position(currPos).title("marker"));
+        }
         if (prevLocation != null) {
             text.setText(String.valueOf(location.distanceTo(prevLocation)));
         }
